@@ -13,6 +13,8 @@ public class SkiScript : MonoBehaviour {
 	public float boostPerTime;
 	public float jumpForce;
 	public float airDrag;
+	public float recoveryRot;
+	public float slowingDrag;
 
 	void Start () {
 		jumpTime = 100f;
@@ -40,9 +42,17 @@ public class SkiScript : MonoBehaviour {
 
 	void OnTriggerEnter (Collider c) {
 		if (c.tag == "Jump") {
-			Debug.Log("jump");
+			Debug.Log("Jump");
 			rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 			rb.drag = airDrag;
+		}
+		if (c.tag == "Hill") {
+			Debug.Log("Recovery");
+			rb.AddTorque(recoveryRot, 0, 0);
+		}
+		if (c.tag == "Slow") {
+			Debug.Log("Slow");
+			rb.drag = slowingDrag;
 		}
 	}
 	void OnCollisionEnter (Collision c) {
