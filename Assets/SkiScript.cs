@@ -15,17 +15,36 @@ public class SkiScript : MonoBehaviour {
 	public float airDrag;
 	public float recoveryRot;
 	public float slowingDrag;
+	float startTimer;
+	public AudioSource startSpeak;
+	public AudioSource skiSound;
+	public AudioSource endSpeak;
+	public AudioSource windLoop;
+	bool canGo;
+	public float canGoTimer;
+
 
 	void Start () {
-		jumpTime = 100f;
+		jumpTime = -1f;
 		rb = GetComponent<Rigidbody>();
+		Invoke("startSound", 5f);
     }
 
 	void Update () {
 
+		startTimer += Time.deltaTime;
+		if (startTimer > canGoTimer && !canGo) {
+			canGo = true;
+			//Beep
+
+		}
+
 		vrCamera.transform.position = cameraPos.transform.position;
 	
-		if (Input.GetKeyDown(KeyCode.Mouse0)) {
+		if (Input.GetKeyDown(KeyCode.Mouse0) && canGo && jumpTime < 0f) {
+			windLoop.loop = false;
+			windLoop.Stop();
+			skiSound.Play();
 			rb.isKinematic = false;
 			jumpTime = 0;
 			rb.velocity = transform.forward * startSpeed;
@@ -34,7 +53,8 @@ public class SkiScript : MonoBehaviour {
 			SceneManager.LoadScene("scene");
 			
 		}
-		jumpTime += Time.deltaTime;
+		if (jumpTime >= 0f)
+			jumpTime += Time.deltaTime;
 		if (jumpTime < velocityBoostTime) {
 			rb.AddForce(transform.forward * boostPerTime * Time.deltaTime, ForceMode.Acceleration);
 		}
@@ -53,6 +73,7 @@ public class SkiScript : MonoBehaviour {
 		if (c.tag == "Slow") {
 			Debug.Log("Slow");
 			rb.drag = slowingDrag;
+			endSpeak.Play();
 		}
 	}
 	void OnCollisionEnter (Collision c) {
@@ -60,5 +81,8 @@ public class SkiScript : MonoBehaviour {
 			Debug.Log("Land");
 			rb.drag = 0;
 		}
+	}
+	void startSound () {
+		startSpeak.Play();
 	}
 }
