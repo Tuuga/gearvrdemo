@@ -42,8 +42,8 @@ public class SkiScript : MonoBehaviour {
 		vrCamera.transform.position = cameraPos.transform.position;
 	
 		if (Input.GetKeyDown(KeyCode.Mouse0) && canGo && jumpTime < 0f) {
-			windLoop.loop = false;
-			windLoop.Stop();
+			//windLoop.loop = false;
+			//windLoop.Stop();
 			skiSound.Play();
 			rb.isKinematic = false;
 			jumpTime = 0;
